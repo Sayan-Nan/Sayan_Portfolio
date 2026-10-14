@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, [data-theme="dark"], :is(.dark, [data-theme="dark"]) *));
+
+:root {
+  --bg-primary: #FAF7F2;
+  --bg-primary-rgb: 250, 247, 242;
+  --bg-secondary: rgba(243, 239, 234, 0.75);
+  --bg-card: rgba(255, 255, 255, 0.82);
+  --bg-card-hover: rgba(252, 250, 246, 0.92);
+  --bg-elevated: rgba(237, 231, 222, 0.85);
+  --bg-footer: #151413;
+  --text-footer: #F5F4F0;
+  --text-footer-muted: #A39F97;
+  
+  --text-primary: #191817;
+  --text-secondary: #35322D;
+  --text-muted: #57524B;
+  
+  --border-subtle: rgba(232, 226, 215, 0.85);
+  --border-strong: #D1C9BA;
+  
+  --accent-primary: #E59819;
+  --accent-hover: #CC820B;
+  --accent-light: #FEF3C7;
+  --accent-text: #853709;
+  
+  --badge-bg: rgba(243, 236, 225, 0.85);
+  --tag-border: #E0D7C7;
+}
+
+.dark, [data-theme="dark"] {
+  --bg-primary: #0F0E0D;
+  --bg-primary-rgb: 15, 14, 13;
+  --bg-secondary: rgba(23, 21, 20, 0.75);
+  --bg-card: rgba(28, 26, 24, 0.82);
+  --bg-card-hover: rgba(36, 34, 31, 0.92);
+  --bg-elevated: rgba(40, 37, 34, 0.85);
+  --bg-footer: #0A0909;
+  --text-footer: #EDECE8;
+  --text-footer-muted: #8A867E;
+  
+  --text-primary: #FAF9F5;
+  --text-secondary: #B5B1A8;
+  --text-muted: #858076;
+  
+  --border-subtle: rgba(44, 41, 37, 0.85);
+  --border-strong: #3F3A34;
+  
+  --accent-primary: #F59E0B;
+  --accent-hover: #FBBF24;
+  --accent-light: rgba(245, 158, 11, 0.15);
+  --accent-text: #FDE68A;
+  
+  --badge-bg: rgba(34, 32, 29, 0.85);
+  --tag-border: #35322D;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-x: hidden;
+}
+
+.font-display {
+  font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+}
+
+.font-serif-heading {
+  font-family: 'Newsreader', Georgia, serif;
+}
+
+/* Custom interactive accents and outlines */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+}
+
+/* Smooth transitions */
+.theme-transition {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+/* Subtle Ambient & Navigational Icon Micro-Animations */
+@keyframes service-icon-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(1.5deg);
+  }
+}
+
+@keyframes service-icon-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes service-icon-sway {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-1.5px) rotate(-2deg);
+  }
+}
+
+.animate-service-float {
+  animation: service-icon-float 3.4s ease-in-out infinite;
+}
+
+.animate-service-pulse {
+  animation: service-icon-pulse 2.8s ease-in-out infinite;
+}
+
+.animate-service-sway {
+  animation: service-icon-sway 3.2s ease-in-out infinite;
+}
+
+/* Content Skeleton Shimmer Sweep Effect */
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(245, 158, 11, 0.14) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer-sweep 2.2s infinite ease-in-out;
+  pointer-events: none;
+}
+
+:root:not(.dark) .animate-shimmer::after {
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 25%,
+    rgba(245, 158, 11, 0.18) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
