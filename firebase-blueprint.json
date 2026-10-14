@@ -1,0 +1,80 @@
+{
+  "entities": {
+    "inquiry": {
+      "title": "Client Inquiry",
+      "description": "Prospective enterprise client project parameters, budget range, timeline, and scope submission",
+      "type": "object",
+      "properties": {
+        "fullName": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100,
+          "description": "Full name of the client representative"
+        },
+        "workEmail": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 120,
+          "pattern": "^[^@]+@[^@]+\\.[^@]+$",
+          "description": "Corporate or work email address"
+        },
+        "companyUrl": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Optional verified company or product URL"
+        },
+        "selectedService": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100,
+          "description": "Target service tier or consultation package"
+        },
+        "budgetRange": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100,
+          "description": "Estimated enterprise engagement budget bracket"
+        },
+        "timeline": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 100,
+          "description": "Target project kickoff or delivery timeline"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 15,
+          "maxLength": 3000,
+          "description": "Project scope outline, ICP definition, and business bottleneck details"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the transmission"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["new", "reviewed", "archived"],
+          "description": "Lifecycle state of the inquiry"
+        }
+      },
+      "required": [
+        "fullName",
+        "workEmail",
+        "selectedService",
+        "budgetRange",
+        "timeline",
+        "message",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/inquiries/{inquiryId}": {
+      "schema": {
+        "$ref": "#/entities/inquiry"
+      },
+      "description": "Submissions from prospective enterprise clients transmitting project parameters and scope"
+    }
+  }
+}

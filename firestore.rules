@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default-deny all unmapped operations
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Hardened Global Security Primitives ---
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && 
+             request.auth.token.email_verified == true && 
+             (request.auth.token.email == 'sayannan@gmail.com' || request.auth.token.email == 'sayan.contentwriter@gmail.com');
+    }
+
+    // --- Validation Blueprint for Inquiries ---
+    function isValidInquiry(data) {
+      return data.keys().hasAll(['fullName', 'workEmail', 'selectedService', 'budgetRange', 'timeline', 'message', 'createdAt']) &&
+             data.keys().hasOnly(['fullName', 'workEmail', 'companyUrl', 'selectedService', 'budgetRange', 'timeline', 'message', 'createdAt', 'status']) &&
+             data.fullName is string &&
+             data.fullName.size() >= 2 &&
+             data.fullName.size() <= 100 &&
+             data.workEmail is string &&
+             data.workEmail.size() >= 5 &&
+             data.workEmail.size() <= 120 &&
+             data.workEmail.matches('^[^@]+@[^@]+\\.[^@]+$') &&
+             (!('companyUrl' in data) || (data.companyUrl is string && data.companyUrl.size() <= 200)) &&
+             data.selectedService is string &&
+             data.selectedService.size() <= 100 &&
+             data.budgetRange is string &&
+             data.budgetRange.size() <= 100 &&
+             data.timeline is string &&
+             data.timeline.size() <= 100 &&
+             data.message is string &&
+             data.message.size() >= 15 &&
+             data.message.size() <= 3000 &&
+             data.createdAt == request.time &&
+             (!('status' in data) || data.status == 'new');
+    }
+
+    // --- Client Inquiries Ingestion ---
+    match /inquiries/{inquiryId} {
+      // Prospective clients can submit inquiries with strict validation
+      allow create: if isValidId(inquiryId) && isValidInquiry(incoming());
+
+      // Only the verified administrator (Sayan) can read, review, or update inquiries
+      allow read: if isAdmin();
+      allow update: if isAdmin() && 
+                       incoming().diff(existing()).affectedKeys().hasOnly(['status', 'reviewedAt', 'internalNotes']);
+      allow delete: if isAdmin();
+    }
+  }
+}
